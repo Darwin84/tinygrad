@@ -20,7 +20,7 @@ setup(name='tinygrad',
         "License :: OSI Approved :: MIT License"
       ],
       install_requires=['numpy', 'requests'],
-      python_requires='>=3.8',
+      python_requires='>=3.6',
       extras_require={
         'gpu': ["pyopencl", "six"],
         'testing': [
