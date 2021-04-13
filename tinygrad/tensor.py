@@ -130,12 +130,15 @@ class Tensor:
       return nodes
     return _deepwalk(self, set(), [])
 
-  def backward(self):
-    assert self.shape == (1,)
+  def backward(self, top_grad=None):
+    #assert self.shape == (1,)
 
     # fill in the first grad with one
     # this is "implicit gradient creation"
-    self.grad = Tensor(np.ones(self.shape, dtype=self.dtype), device=self.device, requires_grad=False)
+    if top_grad is None:
+        self.grad = Tensor(np.ones(self.shape, dtype=self.dtype), device=self.device, requires_grad=False)
+    else:
+        self.grad = top_grad
 
     for t0 in reversed(self.deepwalk()):
       assert (t0.grad is not None)
