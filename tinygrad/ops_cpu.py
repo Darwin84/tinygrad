@@ -145,6 +145,43 @@ class Transpose(Function):
   def backward(ctx, x):
     return np.transpose(x, np.argsort(ctx.order))
 
+# add by qiujunhua
+class Concate(Function):
+  @staticmethod
+  def forward(ctx, x, y, dim):
+    ctx.save_for_backward(dim, 2)
+    return np.concatenate((x,y),axis=dim)
+
+  @staticmethod
+  def backward(ctx, grad_output):
+    dim, split_num = ctx.saved_tensors
+    return np.split(grad_output, split_num, axis=dim)
+
+# add by qiujunhua
+class Unsqueeze(Function):
+  @staticmethod
+  def forward(ctx, x, dim):
+    ctx.save_for_backward(dim)
+    return np.expend_dims(x, dim)
+
+  @staticmethod
+  def backward(ctx, grad_output):
+    dim = ctx.save_tensors
+    return np.squeeze(grad_output, axis=dim)
+
+# add by qiujunhua
+class Repeat(Function):
+  @staticmethod
+  def forward(ctx, x, repeat_num, dim):
+    ctx.save_for_backward(repeat_num, dim)
+    return np.repeat(x, repeat_num, axis=dim)
+
+  @staticmethod
+  def backward(ctx, grad_output):
+    repeat_num, dim = ctx.save_tensors
+    splits = np.split(grad_output, repeat_num, axis=dim)
+    return splits[0]
+
 def inner_slice(x, arg):
   padding = [(max(0, -p[0]), max(0, p[1]-x.shape[i])) for i,p in enumerate(arg)]
   x = np.pad(x, padding)

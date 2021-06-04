@@ -75,13 +75,15 @@ class Tensor:
   training = True
   ops = defaultdict(dict)
 
-  def __init__(self, data, device=DEFAULT_DEVICE, requires_grad=True):
+  def __init__(self, data, name=None, device=DEFAULT_DEVICE, requires_grad=True):
     self.device, self.data = device, self._move_data(data, device)
 
     self.grad, self.requires_grad = None, requires_grad
 
     # internal variables used for autograd graph construction
     self._ctx = None
+
+    self._name = name
 
   def __repr__(self):
     return f"<Tensor {self.data!r} with grad {(self.grad.data if self.grad else None)!r}>"

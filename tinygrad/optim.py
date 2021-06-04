@@ -9,6 +9,13 @@ class Optimizer:
     for param in self.params:
       param.grad = None
 
+  def parameters(self):
+      return self.params
+
+  def set_param(self, params):
+
+      self.params = params
+
 class SGD(Optimizer):
   def __init__(self, params, lr=0.001):
     super().__init__(params)
